@@ -230,6 +230,7 @@ def assign_mri_3rad_days_only(self):
     
     print(f"\n{'='*60}")
     print(quality_metrics['optimization_level'])
+    # ADDED BELOW LINES FOR DEBUGGING
     print(f"{'='*60}")
     print("\n" + "="*60)
     print("[DEBUG] assign_mri_3rad_days_only() ENDING")
