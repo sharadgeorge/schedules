@@ -170,13 +170,10 @@ if oncall_template:
     
     st.markdown("---")
     
-    # Generate button
+    # Generate button - MINIMAL VERSION - Just make it work!
     if st.button("🚀 Generate Schedule", type="primary", use_container_width=True):
         try:
-            # Create debug container that starts collapsed
-            debug_expander = st.expander("🔍 Debug Information (Click to expand if needed)", expanded=False)
-            
-            with st.spinner("Creating scheduler..."):
+            with st.spinner("Generating optimized schedule..."):
                 # Import the scheduler
                 import create_oncall_schedule_v3 as scheduler_module
                 from collections import defaultdict
@@ -226,133 +223,55 @@ if oncall_template:
                             scheduler.special_requests_off[req['section']].add((req['rad'], req['day']))
                         else:
                             scheduler.soft_constraints_off[req['section']].add((req['rad'], req['day']))
-            
-            # Generate schedule
-            with st.spinner("Generating schedule..."):
+                
+                # Generate the schedule
                 output_path = scheduler.generate_schedule()
-            
-            # CHECK AND SHOW DEBUG INFO
-            with debug_expander:
-                st.write("### Quality Metrics Check")
-                has_quality = hasattr(scheduler, 'mri_quality_metrics') and scheduler.mri_quality_metrics
-                st.write(f"- Has mri_quality_metrics: {has_quality}")
-                if has_quality:
-                    st.json(scheduler.mri_quality_metrics)
-                else:
-                    st.error("❌ Quality metrics not found - check your scheduler code")
                 
-                st.write("### Variance Results Check")
-                has_variance = hasattr(scheduler, 'ytd_variance_results') and scheduler.ytd_variance_results
-                st.write(f"- Has ytd_variance_results: {has_variance}")
-                if has_variance:
-                    st.write("- Keys:", list(scheduler.ytd_variance_results.keys()))
-                else:
-                    st.error("❌ Variance results not found - check your scheduler code")
-            
-            # DISPLAY QUALITY METRICS
-            st.markdown("---")
-            st.subheader("📊 MRI Assignment Quality Assessment")
-            
-            quality_metrics = getattr(scheduler, 'mri_quality_metrics', None)
-            
-            if quality_metrics and isinstance(quality_metrics, dict):
+                # Display basic summary
+                st.success("✅ Schedule generated successfully!")
+                
+                month_name = calendar.month_name[scheduler.month]
+                
+                # Show assignment counts
+                gen_count = len(scheduler.assignments['GEN'])
+                ira_count = len(scheduler.assignments['IRA'])
+                mri_count = len(scheduler.assignments['MRI'])
+                
                 col1, col2, col3 = st.columns(3)
-                
                 with col1:
-                    st.metric("2-Rad Days", quality_metrics.get('two_rad_days', 0),
-                             help="Days where GEN or IRA can do MRI")
-                
+                    st.metric("GEN Assignments", gen_count)
                 with col2:
-                    three_rad_count = quality_metrics.get('three_rad_days', 0)
-                    st.metric("3-Rad Days", three_rad_count,
-                             help="Days needing Python assignment")
-                
+                    st.metric("IRA Assignments", ira_count)
                 with col3:
-                    opt_level = quality_metrics.get('optimization_level', 'Unknown')
-                    st.metric("Optimization", opt_level.replace('✓', '').replace('⚠', '').strip())
+                    st.metric("MRI Assignments", mri_count)
                 
-                if three_rad_count > 0:
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.info(f"🔹 Weekends: {quality_metrics.get('three_rad_weekends', 0)} triplet(s)")
-                    with col2:
-                        st.info(f"🔹 Weekdays: {quality_metrics.get('three_rad_weekdays', 0)} day(s)")
-                
-                if three_rad_count == 0:
-                    st.success("🎉 **PERFECTLY OPTIMIZED**: Zero 3-rad days!")
-                elif three_rad_count <= 3:
-                    st.success("✅ **WELL OPTIMIZED**: Minimal 3-rad days")
-                elif three_rad_count <= 6:
-                    st.warning("⚠️ **MODERATELY OPTIMIZED**: Could be improved")
+                # Check for completeness
+                if gen_count == scheduler.days_in_month and ira_count == scheduler.days_in_month and mri_count == scheduler.days_in_month:
+                    st.success("✅ All days fully assigned!")
                 else:
-                    st.error("⚠️ **POORLY OPTIMIZED**: Needs improvement")
-            else:
-                st.error("❌ Quality metrics not available - expand Debug Information above")
-            
-            # DISPLAY VARIANCE ANALYSIS
-            st.markdown("---")
-            st.subheader("📈 YTD Variance Analysis")
-            
-            variance_results = getattr(scheduler, 'ytd_variance_results', None)
-            
-            if variance_results and isinstance(variance_results, dict):
-                summary = variance_results.get('summary', {})
-                col1, col2, col3, col4 = st.columns(4)
+                    if gen_count != scheduler.days_in_month:
+                        missing_gen = [d for d in range(1, scheduler.days_in_month + 1) if d not in scheduler.assignments['GEN']]
+                        st.warning(f"⚠️ GEN missing days: {missing_gen}")
+                    if ira_count != scheduler.days_in_month:
+                        missing_ira = [d for d in range(1, scheduler.days_in_month + 1) if d not in scheduler.assignments['IRA']]
+                        st.warning(f"⚠️ IRA missing days: {missing_ira}")
+                    if mri_count != scheduler.days_in_month:
+                        missing_mri = [d for d in range(1, scheduler.days_in_month + 1) if d not in scheduler.assignments['MRI']]
+                        st.warning(f"⚠️ MRI missing days: {missing_mri}")
                 
-                with col1:
-                    st.metric("Weekend RMSE", f"{summary.get('weekend', {}).get('rmse', 0):.2f}")
-                with col2:
-                    st.metric("Thursday RMSE", f"{summary.get('thu', {}).get('rmse', 0):.2f}")
-                with col3:
-                    st.metric("Weekday RMSE", f"{summary.get('weekday', {}).get('rmse', 0):.2f}")
-                with col4:
-                    st.metric("Overall Score", f"{variance_results.get('overall_score', 0):.2f}")
+                # Download button
+                with open(output_path, 'rb') as f:
+                    excel_data = f.read()
                 
-                overall_score = variance_results.get('overall_score', 0)
-                if overall_score < 1.5:
-                    st.success("✅ **EXCELLENT** balance!")
-                elif overall_score < 2.5:
-                    st.success("✅ **GOOD** balance")
-                elif overall_score < 3.5:
-                    st.warning("⚠️ **FAIR** balance")
-                else:
-                    st.error("⚠️ **POOR** balance")
-            else:
-                st.error("❌ Variance results not available - expand Debug Information above")
-            
-            # Assignment Summary
-            st.markdown("---")
-            st.subheader("📋 Assignment Summary")
-            
-            gen_count = len(scheduler.assignments.get('GEN', {}))
-            ira_count = len(scheduler.assignments.get('IRA', {}))
-            mri_count = len(scheduler.assignments.get('MRI', {}))
-            
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.metric("GEN", gen_count)
-            with col2:
-                st.metric("IRA", ira_count)
-            with col3:
-                st.metric("MRI", f"{mri_count} (3-rad)")
-            
-            if gen_count == scheduler.days_in_month and ira_count == scheduler.days_in_month:
-                st.success("✅ All days fully assigned!")
-            
-            # Download button
-            st.markdown("---")
-            with open(output_path, 'rb') as f:
-                excel_data = f.read()
-            
-            month_name = calendar.month_name[scheduler.month]
-            st.download_button(
-                label="📥 Download Generated Schedule",
-                data=excel_data,
-                file_name=f"OnCall_Schedule_{month_name}_{scheduler.year}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                type="primary"
-            )
-            
+                filename = f"OnCall_Schedule_{month_name}_{scheduler.year}_GENERATED.xlsx"
+                st.download_button(
+                    label="📥 Download Generated Schedule",
+                    data=excel_data,
+                    file_name=filename,
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    type="primary"
+                )
+                
         except Exception as e:
             st.error(f"❌ Error: {str(e)}")
             with st.expander("🔍 View Error Details"):
@@ -361,34 +280,62 @@ if oncall_template:
 
 st.markdown("---")
 
-# Section 3: Convert Rad Schedules for Import
+# Section 3: Convert Rad Schedules for Import (Functional)
 st.header("🔄 Convert Rad Schedules for Import")
 st.markdown("Upload completed Work Schedule and On-Call Schedule files to generate the import CSV file.")
+
+# File uploaders
+st.subheader("Upload Schedule Files (in order):")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    work_file = st.file_uploader("1. Work Schedule (Excel)", type=['xlsx'], key='work_schedule')
+    work_file = st.file_uploader(
+        "1. Work Schedule (Excel)", 
+        type=['xlsx'],
+        key='work_schedule',
+        help="Upload the completed Work Schedule Excel file"
+    )
 
 with col2:
-    oncall_file = st.file_uploader("2. On-Call Schedule (Excel)", type=['xlsx'], key='oncall_schedule')
+    oncall_file = st.file_uploader(
+        "2. On-Call Schedule (Excel)", 
+        type=['xlsx'],
+        key='oncall_schedule',
+        help="Upload the completed On-Call Schedule Excel file"
+    )
 
+# Process button and conversion logic
 if work_file and oncall_file:
     st.markdown("---")
+    
+    # Add month/year selection
     st.subheader("📅 Select Processing Month")
     
     col1, col2 = st.columns(2)
     with col1:
-        selected_month = st.selectbox("Month", options=list(range(1, 13)),
-                                     format_func=lambda x: calendar.month_name[x], index=10)
+        selected_month = st.selectbox(
+            "Month",
+            options=list(range(1, 13)),
+            format_func=lambda x: calendar.month_name[x],
+            index=10  # Default to November (index 10 for month 11)
+        )
+    
     with col2:
-        selected_year = st.number_input("Year", min_value=2020, max_value=2030, value=2025, step=1)
+        selected_year = st.number_input(
+            "Year",
+            min_value=2020,
+            max_value=2030,
+            value=2025,
+            step=1
+        )
     
     st.info(f"📅 Will process: **{calendar.month_name[selected_month]} {selected_year}**")
     
     if st.button("🔄 Convert to Import Format", type="primary"):
         try:
             with st.spinner("Processing schedules..."):
+                # Save uploaded files temporarily
                 with tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx') as tmp_work:
                     tmp_work.write(work_file.getvalue())
                     work_path = tmp_work.name
@@ -397,16 +344,25 @@ if work_file and oncall_file:
                     tmp_oncall.write(oncall_file.getvalue())
                     oncall_path = tmp_oncall.name
                 
+                # Load workbooks
                 wb_work = openpyxl.load_workbook(work_path)
                 ws_work = wb_work['WORK SCHEDULE']
                 
                 wb_oncall = openpyxl.load_workbook(oncall_path, data_only=True)
                 ws_oncall = wb_oncall['Sheet1']
                 
-                output_data = rad_converter.process_schedules(ws_work, ws_oncall, selected_year, selected_month)
+                # Process schedules with EXPLICIT month/year
+                output_data = rad_converter.process_schedules(
+                    ws_work, 
+                    ws_oncall, 
+                    selected_year,
+                    selected_month
+                )
                 
+                # Show success message
                 st.success(f"✅ Generated {len(output_data)} schedule entries")
                 
+                # Create CSV output
                 output = io.StringIO()
                 fieldnames = ['EMPLOYEE', 'TEAM', 'STARTDATE', 'STARTTIME', 
                              'ENDDATE', 'ENDTIME', 'ROLE', 'NOTES', 'ORDER', 'TEAMCOMMENT']
@@ -416,6 +372,7 @@ if work_file and oncall_file:
                 
                 csv_data = output.getvalue()
                 
+                # Provide download button
                 st.download_button(
                     label="📥 Download Import_OnCall_Radiology.csv",
                     data=csv_data,
@@ -424,17 +381,23 @@ if work_file and oncall_file:
                     type="primary"
                 )
                 
+                st.success("✅ Conversion complete! Click the button above to download your file.")
+                
+                # Clean up temp files
                 os.unlink(work_path)
                 os.unlink(oncall_path)
                 
         except Exception as e:
-            st.error(f"❌ Error: {str(e)}")
+            st.error(f"❌ Error during conversion: {str(e)}")
+            st.error("Please check that your Excel files have the correct structure and try again.")
             import traceback
             with st.expander("🔍 View Error Details"):
                 st.code(traceback.format_exc())
+
 else:
     st.info("👆 Please upload both Excel files to begin conversion")
 
+# Footer
 st.markdown("---")
 st.markdown(
     "<div style='text-align: center; color: gray; font-size: 0.8em;'>"
