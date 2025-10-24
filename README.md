@@ -68,32 +68,7 @@ The app will open in your default browser at `http://localhost:8501`
 
 ## ☁️ Deployment to Streamlit Cloud
 
-1. Push your code to GitHub
-2. Go to [share.streamlit.io](https://share.streamlit.io)
-3. Sign in with GitHub
-4. Click "New app"
-5. Select your repository: `sharadgeorge/schedules`
-6. Set Main file path: `app.py`
-7. **Set App URL**: Enter `schedules` to get: `https://schedules.streamlit.app`
-8. Click "Deploy"
-
-Your app is now live at: `https://schedules.streamlit.app`
-
-## 📁 Project Structure
-
-```
-schedule/
-├── app.py                                      # Main app (Radiology landing page)
-├── pages/
-│   └── cardiology.py                          # Cardiology page
-├── oncall_converter_Radiology_demo_v2.py     # Radiology converter script
-├── oncall_converter_Cardiology_demo_v3.py    # Cardiology converter script
-├── create_Rad_Work_Schedule.py               # Work schedule generator (placeholder)
-├── Create_Rad_OnCall_Schedule.py             # On-call schedule generator (placeholder)
-├── requirements.txt                           # Python dependencies
-├── .gitignore                                # Git ignore rules
-└── README.md                                 # This file
-```
+The app is available at: `https://schedules.streamlit.app`
 
 ## 💡 Usage
 
