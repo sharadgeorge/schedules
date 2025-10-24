@@ -205,7 +205,7 @@ if cardio_file1 and cardio_file2:
                 st.download_button(
                     label="📥 Download Import_OnCall_Cardiology.csv",
                     data=csv_data,
-                    file_name="Import_OnCall_Cardiology.csv",
+                    file_name="Epic_OnCall_Import_Cardiology.csv",
                     mime="text/csv",
                     type="primary"
                 )
