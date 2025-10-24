@@ -162,8 +162,8 @@ if cardio_file1 and cardio_file2:
                 try:
                     cardio_data = cardio_converter.read_cardiovascular_data(
                         wb_cardio1,
+                        month_int,
                         year_int,
-                        month_int
                     )
                     st.success(f"✅ Cardiovascular data processed successfully")
                 except IndexError as e:
@@ -184,8 +184,8 @@ if cardio_file1 and cardio_file2:
                 
                 intv_data = cardio_converter.read_interventional_data(
                     wb_cardio2,      # Pass workbook, not worksheet!
-                    selected_year,
-                    selected_month   # Make sure this is 1-12
+                    selected_month,  # Make sure this is 1-12
+                    selected_year  
                 )
                 
                 st.info(f"📊 Interventional entries found: {len(intv_data)}")
