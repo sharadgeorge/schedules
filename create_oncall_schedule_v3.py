@@ -912,54 +912,6 @@ class OnCallScheduler:
         # Final verification
         final_count = len(self.assignments['IRA'])
         print(f"\nIRA Assignment Summary: {final_count}/{self.days_in_month} days assigned")
-        
-        # CRITICAL FIX: Ensure all days are covered (catch orphaned weekends like Day 1 Saturday)
-        if final_count < self.days_in_month:
-            missing_days = [d for d in range(1, self.days_in_month + 1) 
-                           if d not in self.assignments['IRA']]
-            print(f"  WARNING: {len(missing_days)} days still unassigned: {missing_days}")
-            print(f"  Assigning missing days now...")
-            
-            for day in missing_days:
-                # Check for locked assignment first
-                if day in self.locked_assignments['IRA']:
-                    assigned_rad = self.locked_assignments['IRA'][day]
-                    self.assignments['IRA'][day] = assigned_rad
-                    day_type = self.get_day_type(day)
-                    self.monthly_counts[assigned_rad][day_type] += 1
-                    self.ira_monthly_total[assigned_rad] += 1
-                    print(f"    Day {day} -> {assigned_rad} [LOCKED]")
-                    continue
-                
-                day_type = self.get_day_type(day)
-                
-                # Find available IRA rads
-                available_rads = [r for r in IRA_RADS if self.is_available(r, day, 'IRA')]
-                
-                if not available_rads:
-                    # If no one available due to constraints, use all IRA rads
-                    print(f"    WARNING: No available rads for day {day}, using all IRA rads")
-                    available_rads = IRA_RADS
-                
-                # Calculate scores
-                scores = {}
-                for rad in available_rads:
-                    base_score = self.calculate_workload_score(rad, day, day_type, 'IRA')
-                    mri_bonus = -200 if rad in MRI_RADS else 0
-                    scores[rad] = base_score + mri_bonus
-                
-                best_rad = min(scores, key=scores.get)
-                self.assignments['IRA'][day] = best_rad
-                self.monthly_counts[best_rad][day_type] += 1
-                self.ira_monthly_total[best_rad] += 1
-                print(f"    Day {day} -> {best_rad} (score: {scores[best_rad]:.1f})")
-            
-            # Re-verify
-            final_count = len(self.assignments['IRA'])
-            print(f"\n  After fix: {final_count}/{self.days_in_month} days assigned")
-            if final_count == self.days_in_month:
-                print(f"  ✓ All IRA days now assigned!")
-
 
     def assign_mri_optimized(self):
         """Assign MRI minimizing 3-rad days, with fair distribution of MRI-only calls"""
@@ -1601,5 +1553,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
-    
