@@ -1472,7 +1472,8 @@ class OnCallScheduler:
         print(f"Days in month: {self.days_in_month}")
         
         # GET USER PREFERENCES FIRST
-        self.get_user_preferences()
+        # COMMENTED OUT FOR STREAMLIT - preferences set programmatically in Radiology.py
+        # self.get_user_preferences()
         
         print("\n" + "-"*80)
         print("CACHED YTD TOTALS & CALCULATED TARGETS")
