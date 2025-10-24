@@ -38,7 +38,8 @@ with st.sidebar:
     st.markdown("**❤️ Cardiology** (Current)")
 
 # Main page title
-st.title("❤️ Cardiology Schedule Management")
+st.title("❤️ Cardiology Schedule Management")️
+st.markdown('<h1><span style="color: #e74c3c;">❤</span> Cardiology Schedule Management</h1>', unsafe_allow_html=True)
 st.markdown("---")
 
 # Section: Convert Cardiology Schedules for Import
