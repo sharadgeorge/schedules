@@ -1089,6 +1089,14 @@ class OnCallScheduler:
         # Final verification
         final_count = len(self.assignments['MRI'])
         print(f"\nMRI Assignment Summary: {final_count}/{self.days_in_month} days assigned")    
+        # ADD THESE DEBUG LINES:
+        print("\n[DEBUG] About to call assign_mri_3rad_days_only()")
+        result = self.assign_mri_3rad_days_only()
+        print(f"[DEBUG] Received: {result}")
+        print(f"[DEBUG] Type: {type(result)}")
+    
+    self.mri_quality_metrics = result
+    print(f"[DEBUG] Stored as self.mri_quality_metrics: {self.mri_quality_metrics is not None}")
     
     def write_schedule_to_excel(self):
         """Write all assignments to Excel"""
@@ -1570,6 +1578,15 @@ class OnCallScheduler:
         self.print_summary()
         
         output_path = self.write_schedule_to_excel()
+        # ADD THESE DEBUG LINES BEFORE RETURNING:
+        print("\n" + "="*60)
+        print("[DEBUG] create_schedule() ENDING")
+        print(f"[DEBUG] Has mri_quality_metrics: {hasattr(self, 'mri_quality_metrics')}")
+        if hasattr(self, 'mri_quality_metrics'):
+            print(f"[DEBUG] mri_quality_metrics is None: {self.mri_quality_metrics is None}")
+        if self.mri_quality_metrics:
+            print(f"[DEBUG] Keys: {list(self.mri_quality_metrics.keys())}")
+        print("="*60 + "\n")
         
         return output_path
 
