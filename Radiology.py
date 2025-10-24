@@ -22,7 +22,7 @@ st.set_page_config(
 
 # Sidebar with About section ONLY (no custom navigation)
 with st.sidebar:
-    st.markdown("### About")
+    #st.markdown("### About")
     st.info("**Project by JA RAD**")
 
 # Main page title
