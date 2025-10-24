@@ -229,7 +229,7 @@ if oncall_template:
             
             # Generate schedule
             with st.spinner("Generating schedule..."):
-                output_path = scheduler.create_schedule()
+                output_path = scheduler.generate_schedule()
             
             # CHECK AND SHOW DEBUG INFO
             with debug_expander:
