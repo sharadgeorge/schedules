@@ -508,10 +508,10 @@ st.markdown("---")
 
 # Section 3: Convert Rad Schedules for Import (Functional)
 st.header("🔄 Convert Rad Schedules for Import")
-st.markdown("Upload completed Work Schedule and On-Call Schedule files to generate the import CSV file.")
+#st.markdown("Upload completed Work Schedule and On-Call Schedule files to generate the import CSV file.")
 
 # File uploaders
-st.subheader("Upload Schedule Files (in order):")
+#st.subheader("Upload Schedule Files (in order):")
 
 col1, col2 = st.columns(2)
 
