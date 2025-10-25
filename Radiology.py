@@ -48,7 +48,7 @@ st.markdown("---")
 
 # Section 2: Create Rad On-Call Schedule
 st.header("📅 Create Rad On-Call Schedule")
-st.markdown("Upload a blank or partially filled On-Call Schedule template to generate a completed optimized on-call schedule.")
+st.markdown("Upload a blank or partially filled On-Call Schedule template to generate a completed optimized schedule.")
 
 oncall_template = st.file_uploader(
     "Upload Blank Schedule Template (Excel)", 
