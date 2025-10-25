@@ -25,11 +25,11 @@ st.markdown("---")
 
 # Section: Convert Cardiology Schedules for Import
 st.header("🔄 Convert Cardiology Schedules for Import")
-st.markdown("Upload the required Cardiology Schedule Excel files to generate the import CSV file.")
-st.info("ℹ️ Currently supports 2 input files. This will be expanded in the future for additional teams.")
+#st.markdown("Upload the required Cardiology Schedule Excel files to generate the import CSV file.")
+#st.info("ℹ️ Currently supports 2 input files. This will be expanded in the future for additional teams.")
 
 # File uploaders
-st.subheader("Upload Schedule Files (in order):")
+#st.subheader("Upload Schedule Files (in order):")
 
 col1, col2 = st.columns(2)
 
