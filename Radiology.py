@@ -62,8 +62,8 @@ if oncall_template:
     
     # Create expandable section for preferences
     with st.expander("⚙️ Scheduling Preferences (Optional)", expanded=False):
-        st.markdown("### Prior Month Information")
-        st.markdown("Provide information about on-call assignments from the previous month to optimize scheduling.")
+        #st.markdown("### Prior Month Information")
+        #st.markdown("Provide information about on-call assignments from the previous month to optimize scheduling.")
         
         # Section 1: GEN rads on last weekends of prior month
         st.markdown("#### 1. GEN Rads on Last Weekend of Prior Month")
