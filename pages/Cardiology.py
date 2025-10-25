@@ -57,7 +57,7 @@ with st.expander("ℹ️ About Future Expansion"):
     - **Team 94**: Interventional Cardiologist
     
     In the future, additional file upload slots can be added here for new teams.
-    The converter script will need to be updated accordingly to handle the new team configurations.
+    The converter script will be updated accordingly to handle the new team configurations.
     """)
 
 # Process button and conversion logic
