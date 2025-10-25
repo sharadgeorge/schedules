@@ -31,7 +31,7 @@ st.markdown("---")
 
 # Section 1: Create Rad Work Schedule (Placeholder)
 st.header("📝 Create Rad Work Schedule")
-st.markdown("Upload a blank or partially filled Work Schedule template to generate a completed schedule.")
+#st.markdown("Upload a blank or partially filled Work Schedule template to generate a completed schedule.")
 st.warning("⚠️ **In Development** - This feature is currently under development.")
 
 work_template = st.file_uploader(
@@ -48,7 +48,7 @@ st.markdown("---")
 
 # Section 2: Create Rad On-Call Schedule
 st.header("📅 Create Rad On-Call Schedule")
-st.markdown("Upload a blank or partially filled On-Call Schedule template to generate an optimized schedule.")
+#st.markdown("Upload a blank or partially filled On-Call Schedule template to generate an optimized schedule.")
 
 oncall_template = st.file_uploader(
     "Upload On-Call Schedule Template (Excel)", 
