@@ -38,7 +38,7 @@ work_template = st.file_uploader(
     "Upload Work Schedule Template (Excel)", 
     type=['xlsx'],
     key='work_template',
-    help="Upload the Work Schedule template Excel file"
+    help="Upload the blank Work Schedule template Excel file"
 )
 
 if work_template:
@@ -48,13 +48,13 @@ st.markdown("---")
 
 # Section 2: Create Rad On-Call Schedule
 st.header("📅 Create Rad On-Call Schedule")
-st.markdown("Upload a blank schedule template to generate an optimized on-call schedule.")
+st.markdown("Upload a blank or partially filled On-Call Schedule template to generate an optimized schedule.")
 
 oncall_template = st.file_uploader(
-    "Upload Blank Schedule Template (Excel)", 
+    "Upload On-Call Schedule Template (Excel)", 
     type=['xlsx'],
     key='oncall_template',
-    help="Upload the blank oncall schedule template Excel file"
+    help="Upload the blank On-Call schedule template Excel file"
 )
 
 if oncall_template:
@@ -628,7 +628,7 @@ if work_file and oncall_file:
                 st.download_button(
                     label="📥 Download Import_OnCall_Radiology.csv",
                     data=csv_data,
-                    file_name="Epic_Import_OnCall_Radiology.csv",
+                    file_name="Epic_OnCall_Import_Radiology.csv",
                     mime="text/csv",
                     type="primary"
                 )
