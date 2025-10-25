@@ -35,7 +35,7 @@ st.markdown("Upload a blank or partially filled Work Schedule template to genera
 st.warning("⚠️ **In Development** - This feature is currently under development.")
 
 work_template = st.file_uploader(
-    #"Upload Work Schedule Template (Excel)", 
+    "Upload Work Schedule Template (Excel)", 
     type=['xlsx'],
     key='work_template',
     help="Upload the blank Work Schedule template Excel file"
@@ -51,7 +51,7 @@ st.header("📅 Create Rad On-Call Schedule")
 st.markdown("Upload a blank or partially filled On-Call Schedule template to generate an optimized schedule.")
 
 oncall_template = st.file_uploader(
-    #"Upload On-Call Schedule Template (Excel)", 
+    "Upload On-Call Schedule Template (Excel)", 
     type=['xlsx'],
     key='oncall_template',
     help="Upload the blank On-Call schedule template Excel file"
