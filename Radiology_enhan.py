@@ -289,7 +289,7 @@ with col1:
 with col2:
     st.markdown("**🔄 Weekend Consolidation**")
     st.caption("• Detects partial weekends")
-    st.caption("• Consolidates MRI-capable rads")
+    st.caption("• Consolidates MRI coverage")
     st.caption("• Reduces fragmentation")
     st.caption("• More efficient coverage")
     
